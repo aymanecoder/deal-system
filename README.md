@@ -144,7 +144,10 @@ Or to start both database and application:
 ```bash
 make start
 ```
-
+Build and run the application with Docker
+```bash
+make deploy
+```
 The application will be available at: `http://localhost:8080`
 
 ### 4. Access the Web Interface
@@ -226,6 +229,7 @@ make docker-logs   # View Docker logs
 make db-reset      # Reset database (WARNING: deletes all data)
 make start         # Start database and application
 make stop          # Stop database and application
+make deploy        # Build and run the application with Docker
 make all           # Clean, build, and test
 ```
 
