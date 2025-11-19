@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="001-create-valid-deal-table" author="deal-system">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="valid_deal" schemaName="public"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="valid_deal">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="file_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deal_id" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="from_currency" type="VARCHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_currency" type="VARCHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="NUMERIC(19,2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="idx_deal_id" tableName="valid_deal" unique="true">
+            <column name="deal_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_from_currency" tableName="valid_deal">
+            <column name="from_currency"/>
+        </createIndex>
+
+        <createIndex indexName="idx_file_name" tableName="valid_deal">
+            <column name="file_name"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
+

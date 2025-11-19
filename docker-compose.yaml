@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: deals-postgres
+    environment:
+      POSTGRES_DB: deals_data
+      POSTGRES_USER: deals_user
+      POSTGRES_PASSWORD: deals_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U deals_user -d deals_data"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  deal-system:
+    build: .
+    container_name: deal-system
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/deals_data
+      SPRING_DATASOURCE_USERNAME: deals_user
+      SPRING_DATASOURCE_PASSWORD: deals_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_LIQUIBASE_ENABLED: true
+      SPRING_DOCKER_COMPOSE_ENABLED: false
+volumes:
+  postgres_data:

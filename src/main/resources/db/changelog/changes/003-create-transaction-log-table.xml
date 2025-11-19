@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="003-create-transaction-log-table" author="deal-system">
+        <validCheckSum>ANY</validCheckSum>
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="transaction_log" schemaName="public"/>
+            </not>
+        </preConditions>
+
+        <comment>Create transaction_log table to track file import operations</comment>
+
+        <createTable tableName="transaction_log" schemaName="public">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="file_name" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_count" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="invalid_count" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="processing_duration_ms" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="started_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="completed_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="error_message" type="VARCHAR(1000)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+
+        <rollback>
+            <dropTable tableName="transaction_log" schemaName="public"/>
+        </rollback>
+
+    </changeSet>
+
+</databaseChangeLog>

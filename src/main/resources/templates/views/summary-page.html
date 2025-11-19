@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deals Summary - Bloomberg Data Warehouse</title>
+    <link th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" rel="stylesheet"/>
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .card {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .summary-table {
+            margin-top: 20px;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .status-completed {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-processing {
+            background-color: #ffc107;
+            color: black;
+        }
+        .status-failed {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Bloomberg Data Warehouse - FX Deals System</span>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">Deals Import Summary</h3>
+                        <a th:href="@{/upload}" class="btn btn-outline-light btn-sm">Upload File</a>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/summary}" method="get" class="mb-4">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-8">
+                                    <label for="fileName" class="form-label">File Name</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="fileName" 
+                                           name="fileName"
+                                           placeholder="Enter file name to search"
+                                           th:value="${param.fileName}"/>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div th:if="${found == false}" class="alert alert-warning">
+                            <strong>Not Found!</strong> <span th:text="${errorMessage}"></span>
+                        </div>
+
+                        <div th:if="${summary != null}" class="summary-table">
+                            <h5>Transaction Summary</h5>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="30%">File Name</th>
+                                        <td th:text="${summary.fileName}"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Status</th>
+                                        <td>
+                                            <span th:classappend="${summary.status == 'COMPLETED'} ? 'status-badge status-completed' : 
+                                                                    (${summary.status == 'PROCESSING'} ? 'status-badge status-processing' : 
+                                                                    'status-badge status-failed')"
+                                                  th:text="${summary.status}"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Valid Deals Count</th>
+                                        <td th:text="${summary.validCount}"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Invalid Deals Count</th>
+                                        <td th:text="${summary.invalidCount}"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Processing Duration</th>
+                                        <td>
+                                            <span th:if="${summary.processingDurationMs != null}" 
+                                                  th:text="${summary.processingDurationMs + ' ms'}"></span>
+                                            <span th:if="${summary.processingDurationMs == null}">N/A</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Started At</th>
+                                        <td th:text="${summary.startedAt ?: 'N/A'}"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Completed At</th>
+                                        <td th:text="${summary.completedAt ?: 'N/A'}"></td>
+                                    </tr>
+                                    <tr th:if="${summary.errorMessage != null}">
+                                        <th>Error Message</th>
+                                        <td class="text-danger" th:text="${summary.errorMessage}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div th:if="${summary == null && found != false}" class="alert alert-info">
+                            Please enter a file name to view the import summary.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
+

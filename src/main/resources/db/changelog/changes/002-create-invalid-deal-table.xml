@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="002-create-invalid-deal-table" author="deal-system">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="invalid_deal" schemaName="public"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="invalid_deal">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="file_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deal_id" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="from_currency" type="VARCHAR(3)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="to_currency" type="VARCHAR(3)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="date_time" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="amount" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="error_message" type="VARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="row_data" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="idx_invalid_file_name" tableName="invalid_deal">
+            <column name="file_name"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
+

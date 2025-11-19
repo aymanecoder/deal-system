@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Deals - Bloomberg Data Warehouse</title>
+    <link th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" rel="stylesheet"/>
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .card {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Bloomberg Data Warehouse - FX Deals System</span>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">Import FX Deals</h3>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Success!</strong> File <strong th:text="${fileName}"></strong> has been successfully imported.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        
+                        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> <span th:text="${errorMessage ?: 'Failed importing file.'}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+
+                        <form th:object="${fileUploadForm}" th:action="@{/upload}" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="file" class="form-label">CSV File</label>
+                                <input type="file" 
+                                       class="form-control" 
+                                       id="file" 
+                                       th:field="*{file}"
+                                       accept=".csv"
+                                       required/>
+                                <div class="form-text">
+                                    Please select a CSV file with the following columns: deal_id, from_currency, to_currency, date_time, amount
+                                </div>
+                                <div th:if="${#fields.hasErrors('file')}" class="text-danger">
+                                    <ul class="list-unstyled mb-0">
+                                        <li th:each="err : ${#fields.errors('file')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Upload</button>
+                                <a th:href="@{/summary}" class="btn btn-outline-secondary">View Summary</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
+
